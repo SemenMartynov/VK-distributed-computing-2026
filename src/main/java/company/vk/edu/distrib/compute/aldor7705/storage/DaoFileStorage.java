@@ -57,7 +57,7 @@ public class DaoFileStorage {
                 dos.write(value);
             }
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка при записи в файл", e);
+            throw new UncheckedIOException("Ошибка при записи в файл", e);
         }
     }
 
@@ -78,7 +78,7 @@ public class DaoFileStorage {
             }
             return map;
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка при чтении файла", e);
+            throw new UncheckedIOException("Ошибка при чтении файла", e);
         }
     }
 
