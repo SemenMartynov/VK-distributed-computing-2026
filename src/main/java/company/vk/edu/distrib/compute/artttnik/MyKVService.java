@@ -60,13 +60,14 @@ public class MyKVService implements KVService {
     private static final class StatusHandler implements HttpHandler {
         private static final Logger log = LoggerFactory.getLogger(StatusHandler.class);
 
-        @SuppressWarnings("PMD.GuardLogStatement")
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(200, -1);
             } else {
-                log.warn("Unsupported method for /v0/status: {}", exchange.getRequestMethod());
+                if (log.isErrorEnabled()) {
+                    log.error("Unsupported method for /v0/status: {}", exchange.getRequestMethod());
+                }
                 exchange.sendResponseHeaders(405, -1);
             }
         }
@@ -76,7 +77,6 @@ public class MyKVService implements KVService {
         private static final String ID_PARAM = "id";
         private static final Logger log = LoggerFactory.getLogger(EntityHandler.class);
 
-        @SuppressWarnings("PMD.GuardLogStatement")
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             var id = extractId(exchange.getRequestURI().getQuery());
@@ -94,7 +94,9 @@ public class MyKVService implements KVService {
                 log.error("Entity not found: {}", id);
                 exchange.sendResponseHeaders(404, -1);
             } catch (IllegalArgumentException e) {
-                log.error("Invalid argument: {}", e.getMessage());
+                if (log.isErrorEnabled()) {
+                    log.error("Invalid argument: {}", e.getMessage());
+                }
                 exchange.sendResponseHeaders(400, -1);
             } catch (Exception e) {
                 log.error("Internal error processing request", e);
