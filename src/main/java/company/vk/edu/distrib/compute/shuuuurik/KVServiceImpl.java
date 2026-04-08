@@ -163,13 +163,8 @@ public class KVServiceImpl implements KVService {
                     return;
                 }
 
-                String requestMethod = exchange.getRequestMethod();
-                switch (requestMethod) {
-                    case METHOD_GET -> handleGet(exchange, id);
-                    case METHOD_PUT -> handlePut(exchange, id);
-                    case METHOD_DELETE -> handleDelete(exchange, id);
-                    default -> exchange.sendResponseHeaders(405, -1);
-                }
+                dispatchRequest(exchange, id);
+
             } catch (NoSuchElementException e) {
                 exchange.sendResponseHeaders(404, -1);
             } catch (IllegalArgumentException e) {
@@ -178,6 +173,17 @@ public class KVServiceImpl implements KVService {
                 log.error("Unexpected error while handling request", e);
                 exchange.sendResponseHeaders(500, -1);
             }
+        }
+    }
+
+    private void dispatchRequest(HttpExchange exchange, String id) throws IOException {
+        String requestMethod = exchange.getRequestMethod();
+
+        switch (requestMethod) {
+            case METHOD_GET -> handleGet(exchange, id);
+            case METHOD_PUT -> handlePut(exchange, id);
+            case METHOD_DELETE -> handleDelete(exchange, id);
+            default -> exchange.sendResponseHeaders(405, -1);
         }
     }
 
