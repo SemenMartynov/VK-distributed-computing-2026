@@ -33,7 +33,8 @@ public class SemenMartynovKVService implements KVService {
      * @throws IOException if the server cannot be created on the specified port
      */
     public SemenMartynovKVService(int port) throws IOException {
-        this.dao = new InMemoryDao();
+        //this.dao = new InMemoryDao();
+        this.dao = new FileSystemDao();
         this.server = HttpServer.create(new InetSocketAddress(port), 0);
 
         // Java 21+ Virtual Threads are perfect for lightweight concurrent HTTP handling
